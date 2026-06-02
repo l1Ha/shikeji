@@ -1,0 +1,51 @@
+<view class="container">
+  <view class="section">
+    <view class="section-title">我的提醒清单</view>
+    
+    <view class="reminder-item" wx:for="{{reminders}}" wx:key="id">
+      <view class="item-header">
+        <input class="edit-title" value="{{item.title}}" bindinput="onTitleInput" data-id="{{item.id}}"/>
+        <text class="btn-delete" bindtap="deleteReminder" data-id="{{item.id}}">删除</text>
+      </view>
+      <view class="item-slider">
+        <text class="label">间隔: {{item.interval}} 分钟</text>
+        <slider bindchange="onIntervalChange" value="{{item.interval}}" min="1" max="180" show-value activeColor="#00b894" data-id="{{item.id}}"/>
+      </view>
+    </view>
+
+    <button class="btn-add" bindtap="addReminder">+ 添加新提醒</button>
+  </view>
+
+  <view class="section">
+    <view class="section-title">提醒生效时间</view>
+    <view class="item-time">
+      <text class="label">开始时间</text>
+      <picker mode="time" value="{{startTime}}" bindchange="onStartTimeChange">
+        <view class="time-value">{{startTime}}</view>
+      </picker>
+    </view>
+    <view class="item-time">
+      <text class="label">结束时间</text>
+      <picker mode="time" value="{{endTime}}" bindchange="onEndTimeChange">
+        <view class="time-value">{{endTime}}</view>
+      </picker>
+    </view>
+    
+    <view class="item-switch">
+      <text class="label">系统级通知 (允许后台弹出)</text>
+      <switch checked="{{subscribe}}" bindchange="onSubscribeChange" color="#0984e3"/>
+    </view>
+    <view class="item-switch">
+      <text class="label">勿扰模式 (深夜自动静默)</text>
+      <switch checked="{{dnd}}" bindchange="onDndChange" color="#00b894"/>
+    </view>
+    <view class="item-switch">
+      <text class="label">提醒声效</text>
+      <switch checked="{{sound}}" bindchange="onSoundChange" color="#00b894"/>
+    </view>
+  </view>
+
+  <view class="footer">
+    <button class="btn-save" bindtap="saveAll">保存并应用</button>
+  </view>
+</view>
