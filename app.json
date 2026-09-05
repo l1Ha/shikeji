@@ -7,9 +7,10 @@
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "健康提醒",
+    "navigationBarTitleText": "时刻计",
     "navigationBarTextStyle": "black"
   },
+  "__usePrivacyCheck__": true,
   "tabBar": {
     "color": "#999999",
     "selectedColor": "#0984e3",
@@ -19,11 +20,15 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "提醒"
+        "text": "提醒",
+        "iconPath": "images/logo.png",
+        "selectedIconPath": "images/logo.png"
       },
       {
         "pagePath": "pages/settings/settings",
-        "text": "设置"
+        "text": "设置",
+        "iconPath": "images/settings.png",
+        "selectedIconPath": "images/settings.png"
       }
     ]
   },

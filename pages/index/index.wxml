@@ -1,10 +1,11 @@
 <view class="container">
   <view class="user-info">
-    <view class="score-card" bindtap="onShareAppMessage">
+    <button class="score-card" open-type="share">
       <text class="score-label">今日健康分</text>
       <text class="score-value">{{healthScore}}</text>
+      <text class="streak-badge">🔥 已坚持 {{streakDays}} 天</text>
       <text class="share-hint">点击分享</text>
-    </view>
+    </button>
     <view class="quote-box" bindtap="refreshQuote">
       <text class="quote-text">“{{currentQuote}}”</text>
       <text class="quote-sub">点击换一句</text>
@@ -12,13 +13,18 @@
   </view>
 
   <view class="reminders">
-    <view class="card {{item.status}}" wx:for="{{reminders}}" wx:key="type">
-      <view class="card-header">
-        <text class="card-title">{{item.title}}</text>
-        <text class="countdown">{{item.remainingTimeStr}}</text>
+    <view class="card {{item.status}}" wx:for="{{reminders}}" wx:key="id">
+      <view class="card-icon-box">
+        <image class="card-icon" src="/images/{{item.type || 'logo'}}.svg"></image>
       </view>
-      <view class="card-body">
-        <text class="card-desc">{{item.desc}}</text>
+      <view class="card-content">
+        <view class="card-header">
+          <text class="card-title">{{item.title}}</text>
+          <text class="countdown">{{item.remainingTimeStr}}</text>
+        </view>
+        <view class="card-body">
+          <text class="card-desc">{{item.desc}}</text>
+        </view>
       </view>
       <view class="card-footer">
         <button class="btn-done {{item.remainingTime > 0 ? 'btn-pending' : 'btn-ready'}}" 

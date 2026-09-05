@@ -1,7 +1,16 @@
 <view class="container">
+  <view class="mode-selector" wx:if="{{!isRunning}}">
+    <view wx:for="{{modes}}" wx:key="name" 
+          class="mode-item {{currentModeIndex === index ? 'active' : ''}}" 
+          bindtap="selectMode" data-index="{{index}}">
+      {{item.name}}
+    </view>
+  </view>
+
   <view class="circle-container">
-    <view class="breathing-circle {{status}}"></view>
+    <view class="breathing-circle {{status}}" style="transition-duration: {{phaseDuration}}ms"></view>
     <text class="status-text">{{statusText}}</text>
+    <text class="phase-count" wx:if="{{isRunning && phaseCount > 0}}">{{phaseCount}}s</text>
   </view>
   
   <view class="timer">{{timerStr}}</view>

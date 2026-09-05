@@ -48,8 +48,17 @@ Page({
   onTitleInput(e) {
     const { id } = e.currentTarget.dataset;
     const { value } = e.detail;
-    const reminders = this.data.reminders.map(item => 
+    const reminders = this.data.reminders.map(item =>
       item.id === id ? { ...item, title: value } : item
+    );
+    this.setData({ reminders });
+  },
+
+  onDescInput(e) {
+    const { id } = e.currentTarget.dataset;
+    const { value } = e.detail;
+    const reminders = this.data.reminders.map(item =>
+      item.id === id ? { ...item, desc: value } : item
     );
     this.setData({ reminders });
   },
@@ -57,7 +66,7 @@ Page({
   onIntervalChange(e) {
     const { id } = e.currentTarget.dataset;
     const { value } = e.detail;
-    const reminders = this.data.reminders.map(item => 
+    const reminders = this.data.reminders.map(item =>
       item.id === id ? { ...item, interval: value } : item
     );
     this.setData({ reminders });
@@ -76,6 +85,10 @@ Page({
 
   deleteReminder(e) {
     const { id } = e.currentTarget.dataset;
+    if (this.data.reminders.length <= 1) {
+      wx.showToast({ title: '至少保留一个提醒', icon: 'none' });
+      return;
+    }
     const reminders = this.data.reminders.filter(item => item.id !== id);
     this.setData({ reminders });
   },
@@ -89,6 +102,11 @@ Page({
   },
 
   saveAll() {
+    // 过滤空白标题，避免出现无名提醒
+    const reminders = this.data.reminders
+      .map(item => ({ ...item, title: (item.title || '').trim() || '未命名提醒' }))
+      .map(item => ({ ...item, interval: Math.max(1, parseInt(item.interval, 10) || 1) }));
+
     wx.setStorageSync('settings', {
       dnd: this.data.dnd,
       sound: this.data.sound,
@@ -96,15 +114,35 @@ Page({
       startTime: this.data.startTime,
       endTime: this.data.endTime
     });
-    wx.setStorageSync('reminder_list', this.data.reminders);
-    
+
+    // 清理已删除提醒的计时锚点，避免残留数据
+    const keptIds = reminders.map(item => item.id);
+    const prevList = wx.getStorageSync('reminder_list') || [];
+    prevList.forEach(item => {
+      if (keptIds.indexOf(item.id) === -1) {
+        wx.removeStorageSync(`next_${item.id}`);
+      }
+    });
+
+    // 保留已有提醒的时间锚点；间隔有调整时按新间隔重新计时
+    reminders.forEach(item => {
+      const prev = prevList.find(p => p.id === item.id);
+      if (!prev) {
+        wx.setStorageSync(`next_${item.id}`, Date.now() + item.interval * 60 * 1000);
+      } else if (prev.interval !== item.interval) {
+        wx.setStorageSync(`next_${item.id}`, Date.now() + item.interval * 60 * 1000);
+      }
+    });
+
+    wx.setStorageSync('reminder_list', reminders);
+
     wx.showToast({
       title: '设置已应用',
       icon: 'success'
     });
-    
+
     setTimeout(() => {
-      wx.navigateBack();
+      wx.switchTab({ url: '/pages/index/index' });
     }, 1500);
   },
 

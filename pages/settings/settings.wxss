@@ -51,6 +51,18 @@
   padding: 10rpx;
 }
 
+.item-desc {
+  margin-bottom: 10rpx;
+}
+
+.edit-desc {
+  font-size: 26rpx;
+  color: #636e72;
+  background: #f1f2f6;
+  border-radius: 10rpx;
+  padding: 10rpx 15rpx;
+}
+
 .item-slider {
   margin-top: 10rpx;
 }

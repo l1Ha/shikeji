@@ -19,8 +19,23 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-width: 160rpx;
+  min-width: 200rpx;
   box-shadow: 0 10rpx 20rpx rgba(108, 92, 231, 0.2);
+  margin: 0;
+  line-height: inherit;
+  border: none;
+}
+
+.score-card::after {
+  border: none;
+}
+
+.streak-badge {
+  font-size: 20rpx;
+  margin-top: 8rpx;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4rpx 16rpx;
+  border-radius: 20rpx;
 }
 
 .score-label {
@@ -78,6 +93,31 @@
   margin-bottom: 30rpx;
   box-shadow: 0 4rpx 15rpx rgba(0,0,0,0.03);
   transition: all 0.3s ease;
+  display: flex;
+  align-items: flex-start;
+  gap: 30rpx;
+  flex-wrap: wrap;
+}
+
+.card-icon-box {
+  width: 80rpx;
+  height: 80rpx;
+  background: #f8f9fa;
+  border-radius: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon {
+  width: 50rpx;
+  height: 50rpx;
+}
+
+.card-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .card-header {

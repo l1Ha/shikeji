@@ -1,6 +1,9 @@
+const health = require('../../utils/health.js');
+
 Page({
   data: {
     healthScore: 0,
+    streakDays: 0,
     currentQuote: "深呼吸，感受当下的宁静。",
     quotes: [
       "深呼吸，感受当下的宁静。",
@@ -21,6 +24,7 @@ Page({
   },
 
   onShow() {
+    this.initHealthScore();
     this.initReminders();
   },
 
@@ -30,9 +34,18 @@ Page({
     }
   },
 
+  onUnload() {
+    if (this.data.timerInterval) {
+      clearInterval(this.data.timerInterval);
+    }
+  },
+
   initHealthScore() {
-    const score = wx.getStorageSync('healthScore') || 0;
-    this.setData({ healthScore: score });
+    const record = health.getTodayRecord();
+    this.setData({
+      healthScore: record.score,
+      streakDays: record.streak
+    });
   },
 
   refreshQuote() {
@@ -58,10 +71,6 @@ Page({
       }
 
       let remaining = Math.max(0, Math.floor((nextTime - now) / 1000));
-
-      // 如果已经过期，则显示为0，等待用户点击完成
-      if (remaining < 0) remaining = 0;
-
       return {
         ...item,
         remainingTime: remaining,
@@ -75,23 +84,23 @@ Page({
 
   startGlobalTimer() {
     if (this.data.timerInterval) clearInterval(this.data.timerInterval);
-    
+
     this.setData({
       timerInterval: setInterval(() => {
         const now = Date.now();
         let reminders = this.data.reminders.map(item => {
           // 严格从本地存储读取 established 的时间锚点
           const nextTime = wx.getStorageSync(`next_${item.id}`);
-          
+
           if (!nextTime) return item; // 理论上不会发生，因为 initReminders 已初始化
 
           let remaining = Math.max(0, Math.floor((nextTime - now) / 1000));
-          
+
           // 如果刚刚到达 0 秒，触发通知
           if (remaining === 0 && item.remainingTime > 0) {
             this.triggerNotify(item);
           }
-          
+
           return {
             ...item,
             remainingTime: remaining,
@@ -109,33 +118,40 @@ Page({
     return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   },
 
+  /**
+   * 判断当前时间是否在生效窗口内，支持跨天窗口（如 22:00 - 06:00）。
+   */
+  isActiveTime(settings, now) {
+    const currentStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const { startTime, endTime } = settings;
+    return startTime <= endTime
+      ? currentStr >= startTime && currentStr <= endTime
+      : currentStr >= startTime || currentStr <= endTime;
+  },
+
   triggerNotify(item) {
-    const settings = wx.getStorageSync('settings') || { 
-      dnd: true, 
+    const settings = wx.getStorageSync('settings') || {
+      dnd: true,
       sound: true,
       startTime: '09:00',
       endTime: '17:00'
     };
-    
-    const now = new Date();
-    const currentStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
 
-    // 检查是否在生效时间内
-    if (currentStr < settings.startTime || currentStr > settings.endTime) {
-      console.log('不在提醒时间内:', currentStr);
-      // 仍然重置计时器
+    const now = new Date();
+
+    // 静默时段（非生效窗口或勿扰模式）：不提醒，重置计时器避免任务堆积
+    const dndBlocked = settings.dnd && (now.getHours() >= 22 || now.getHours() < 8);
+    if (!this.isActiveTime(settings, now) || dndBlocked) {
       const nextTime = Date.now() + item.interval * 60 * 1000;
       wx.setStorageSync(`next_${item.id}`, nextTime);
       this.initReminders();
       return;
     }
-    
-    if (settings.dnd) {
-      const hour = now.getHours();
-      if (hour >= 22 || hour < 8) return;
+
+    if (settings.sound) {
+      wx.vibrateLong();
     }
 
-    wx.vibrateLong();
     wx.showModal({
       title: item.title,
       content: item.desc || '到时间啦！',
@@ -156,24 +172,28 @@ Page({
     if (!item || item.remainingTime > 0) return;
 
     const settings = wx.getStorageSync('settings') || { subscribe: false };
-    
+
     // 如果开启了系统通知，尝试请求订阅
     if (settings.subscribe) {
-      this.requestSubscription(item).then(() => {
-        this.finalizeTask(id, item);
+      this.requestSubscription().then(() => {
+        this.finalizeTask(id);
       }).catch(() => {
-        this.finalizeTask(id, item);
+        this.finalizeTask(id);
       });
     } else {
-      this.finalizeTask(id, item);
+      this.finalizeTask(id);
     }
   },
 
-  requestSubscription(item) {
-    return new Promise((resolve, reject) => {
-      // 这里的模板 ID 需要在微信公众后台申请，此处为演示占位符
-      const templateId = 'YOUR_HEALTH_TEMPLATE_ID'; 
-      
+  requestSubscription() {
+    return new Promise((resolve) => {
+      // 这里的模板 ID 需要在微信公众后台申请；未配置占位符时直接跳过
+      const templateId = 'YOUR_HEALTH_TEMPLATE_ID';
+      if (!templateId || templateId.indexOf('YOUR_') === 0) {
+        resolve();
+        return;
+      }
+
       wx.requestSubscribeMessage({
         tmplIds: [templateId],
         success: (res) => {
@@ -191,16 +211,20 @@ Page({
     });
   },
 
-  finalizeTask(id, item) {
-    const nextTime = Date.now() + item.interval * 60 * 1000;
+  finalizeTask(id) {
+    const nextTime = Date.now() + this.getInterval(id) * 60 * 1000;
     wx.setStorageSync(`next_${id}`, nextTime);
 
-    const newScore = this.data.healthScore + 10;
-    this.setData({ healthScore: newScore });
-    wx.setStorageSync('healthScore', newScore);
+    const record = health.addScore(10);
+    this.setData({ healthScore: record.score, streakDays: record.streak });
 
     wx.showToast({ title: '太棒了！+10分', icon: 'success' });
     this.initReminders();
+  },
+
+  getInterval(id) {
+    const item = this.data.reminders.find(r => r.id === id);
+    return item ? item.interval : 30;
   },
 
   startBreathing() {
@@ -209,9 +233,9 @@ Page({
 
   onShareAppMessage() {
     return {
-      title: `我今天的健康分已经 ${this.data.healthScore} 啦！快来一起工作并爱护身体吧~`,
+      title: `我今天的健康分已经 ${this.data.healthScore} 啦！已坚持 ${this.data.streakDays} 天，快来一起工作并爱护身体吧~`,
       path: '/pages/index/index',
-      imageUrl: '/images/share-cover.png' // 建议后续添加一张精美封面图
+      imageUrl: '/images/share-cover.png'
     }
   },
 

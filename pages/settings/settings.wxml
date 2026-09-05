@@ -7,6 +7,9 @@
         <input class="edit-title" value="{{item.title}}" bindinput="onTitleInput" data-id="{{item.id}}"/>
         <text class="btn-delete" bindtap="deleteReminder" data-id="{{item.id}}">删除</text>
       </view>
+      <view class="item-desc">
+        <input class="edit-desc" value="{{item.desc}}" placeholder="提醒描述，如：站起来走动2分钟" bindinput="onDescInput" data-id="{{item.id}}"/>
+      </view>
       <view class="item-slider">
         <text class="label">间隔: {{item.interval}} 分钟</text>
         <slider bindchange="onIntervalChange" value="{{item.interval}}" min="1" max="180" show-value activeColor="#00b894" data-id="{{item.id}}"/>
@@ -30,17 +33,18 @@
         <view class="time-value">{{endTime}}</view>
       </picker>
     </view>
-    
+    <view class="time-hint" wx:if="{{startTime > endTime}}">跨天模式：提醒将持续到次日结束时间</view>
+
     <view class="item-switch">
       <text class="label">系统级通知 (允许后台弹出)</text>
       <switch checked="{{subscribe}}" bindchange="onSubscribeChange" color="#0984e3"/>
     </view>
     <view class="item-switch">
-      <text class="label">勿扰模式 (深夜自动静默)</text>
+      <text class="label">勿扰模式 (22:00 - 次日 8:00 自动静默)</text>
       <switch checked="{{dnd}}" bindchange="onDndChange" color="#00b894"/>
     </view>
     <view class="item-switch">
-      <text class="label">提醒声效</text>
+      <text class="label">震动提醒</text>
       <switch checked="{{sound}}" bindchange="onSoundChange" color="#00b894"/>
     </view>
   </view>

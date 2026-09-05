@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Shikeji" parent="android:Theme.DeviceDefault.Light.NoActionBar">
+        <!-- 基础状态栏颜色 -->
+        <item name="android:statusBarColor">#00cec9</item>
+    </style>
+</resources>

@@ -1,5 +1,5 @@
 {
-  "description": "健康提醒小程序",
+  "description": "时刻计 - 您的健康提醒助手",
   "packOptions": {
     "ignore": [],
     "include": []
@@ -50,8 +50,8 @@
   },
   "compileType": "miniprogram",
   "libVersion": "2.19.4",
-  "appid": "wxd5ef13fc2c229edd",
-  "projectname": "health-reminder",
+  "appid": "wx6074adeaa62e57dc",
+  "projectname": "时刻计",
   "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",
