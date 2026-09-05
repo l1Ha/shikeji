@@ -42,5 +42,9 @@
       <view class="action-icon breathing-icon"></view>
       <text>1分钟呼吸法</text>
     </view>
+    <view class="action-item" bindtap="openStats">
+      <view class="action-icon stats-icon"></view>
+      <text>健康周报</text>
+    </view>
   </view>
 </view>

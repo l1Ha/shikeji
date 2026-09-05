@@ -2,7 +2,8 @@
   "pages": [
     "pages/index/index",
     "pages/settings/settings",
-    "pages/breathing/breathing"
+    "pages/breathing/breathing",
+    "pages/stats/stats"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -179,16 +179,20 @@
 .quick-actions {
   margin-top: 40rpx;
   display: flex;
-  justify-content: center;
+  gap: 20rpx;
 }
 
 .action-item {
+  flex: 1;
   background: white;
-  padding: 30rpx 60rpx;
+  padding: 30rpx;
   border-radius: 40rpx;
   display: flex;
   align-items: center;
-  gap: 20rpx;
+  justify-content: center;
+  gap: 16rpx;
+  font-size: 26rpx;
+  color: #2d3436;
   box-shadow: 0 4rpx 15rpx rgba(0,0,0,0.05);
 }
 
@@ -198,6 +202,36 @@
   background: #00cec9;
   border-radius: 50%;
   animation: pulse 2s infinite;
+}
+
+.stats-icon {
+  position: relative;
+  width: 40rpx;
+  height: 40rpx;
+  background: linear-gradient(#0984e3, #0984e3) no-repeat right bottom / 10rpx 40rpx;
+  border-radius: 0;
+}
+
+.stats-icon::before {
+  content: '';
+  position: absolute;
+  left: 4rpx;
+  bottom: 0;
+  width: 10rpx;
+  height: 16rpx;
+  background: #0984e3;
+  border-radius: 3rpx;
+}
+
+.stats-icon::after {
+  content: '';
+  position: absolute;
+  left: 22rpx;
+  bottom: 0;
+  width: 10rpx;
+  height: 28rpx;
+  background: #0984e3;
+  border-radius: 3rpx;
 }
 
 @keyframes pulse {

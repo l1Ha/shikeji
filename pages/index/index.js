@@ -231,6 +231,10 @@ Page({
     wx.navigateTo({ url: '/pages/breathing/breathing' });
   },
 
+  openStats() {
+    wx.navigateTo({ url: '/pages/stats/stats' });
+  },
+
   onShareAppMessage() {
     return {
       title: `我今天的健康分已经 ${this.data.healthScore} 啦！已坚持 ${this.data.streakDays} 天，快来一起工作并爱护身体吧~`,

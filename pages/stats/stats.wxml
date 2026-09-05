@@ -1,0 +1,45 @@
+<view class="container">
+  <view class="summary-card">
+    <view class="summary-main">
+      <text class="summary-num">{{weekTotal}}</text>
+      <text class="summary-label">本周健康分</text>
+    </view>
+    <view class="summary-divider"></view>
+    <view class="summary-side">
+      <view class="summary-item">
+        <text class="summary-value">{{activeDays}}/7</text>
+        <text class="summary-key">本周打卡</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-value">{{streak}}</text>
+        <text class="summary-key">连续天数</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-value">{{total}}</text>
+        <text class="summary-key">累计完成</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="chart-card">
+    <view class="chart-header">
+      <text class="chart-title">近 7 天趋势</text>
+      <text class="chart-today">今日 {{todayScore}} 分</text>
+    </view>
+    <view class="chart">
+      <view class="bar-col" wx:for="{{week}}" wx:key="date">
+        <text class="bar-score" wx:if="{{item.score > 0}}">{{item.score}}</text>
+        <view class="bar-track">
+          <view class="bar {{item.isToday ? 'bar-today' : ''}} {{item.score > 0 ? '' : 'bar-empty'}}"
+                style="height: {{item.height}}rpx"></view>
+        </view>
+        <text class="bar-label {{item.isToday ? 'label-today' : ''}}">{{item.label}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="tips-card">
+    <text class="tips-title">💡 小贴士</text>
+    <text class="tips-text">完成提醒任务 +10 分，完成一节呼吸练习 +5 分。坚持每天打卡，让连续天数持续增长！</text>
+  </view>
+</view>
