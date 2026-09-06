@@ -1,8 +1,15 @@
 # 时刻计 · Shikeji
 
-> 您的健康提醒助手 —— 面向久坐办公族的微信小程序，也提供 Android 原生版本。
+> 您的健康提醒助手 —— 面向久坐办公族：微信小程序 + Android + macOS + iOS 四端实现。
 
 「时刻计」帮助你规律地照顾自己的身体：定时提醒起身、喝水、远眺放松，配合 1 分钟呼吸冥想和健康分打卡，让努力工作与爱护身体并行。
+
+| 平台 | 获取方式 |
+| --- | --- |
+| 微信小程序 | 微信开发者工具导入本仓库根目录 |
+| Android | [Releases](https://github.com/l1Ha/shikeji/releases) 下载 APK，支持应用内自动更新（v1.3+） |
+| macOS | [Releases](https://github.com/l1Ha/shikeji/releases) 下载 `shikeji-mac-x.y.z.zip`（macOS 13+，Intel/Apple Silicon 通用） |
+| iOS | 经 Xcode 签名安装，工程见 [apple/](apple/README.md) |
 
 ## ✨ 功能特性
 
@@ -52,7 +59,8 @@ miniprogram/
 ├── utils/
 │   └── health.js   # 健康分共享模块（每日结算 + 连续打卡 + 周报数据）
 ├── images/         # 图标与分享封面资源
-└── android/        # Android 原生版本（Kotlin + Jetpack Compose + WorkManager）
+├── android/        # Android 原生版本（Kotlin + Compose + WorkManager）
+└── apple/          # Apple 版本（SwiftUI，macOS 发行包 + iOS 工程）
 ```
 
 ## 🚀 快速开始
