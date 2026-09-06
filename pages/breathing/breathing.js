@@ -1,13 +1,22 @@
 const health = require('../../utils/health.js');
 
+const CUSTOM_STORAGE_KEY = 'custom_breath';
+const MODE_STORAGE_KEY = 'breath_mode';
+const DEFAULT_CUSTOM = { inhale: 4, hold: 4, exhale: 6 };
+
 Page({
   data: {
     modes: [
       { name: '4-7-8 助眠', inhale: 4000, hold: 7000, exhale: 8000, desc: '深层放松，缓解焦虑' },
       { name: '等比呼吸 (方块)', inhale: 4000, hold: 4000, exhale: 4000, desc: '提升专注，平衡情绪' },
-      { name: '快速冷静', inhale: 2000, hold: 0, exhale: 4000, desc: '迅速平复激动心情' }
+      { name: '快速冷静', inhale: 2000, hold: 0, exhale: 4000, desc: '迅速平复激动心情' },
+      { name: '自定义', custom: true, desc: '按你的节奏来' }
     ],
     currentModeIndex: 1,
+    custom: DEFAULT_CUSTOM,
+    cycleTotal: 14,
+    cyclesPerMin: '4.3',
+    showCustomEditor: false,
     status: 'idle',
     statusText: '准备好了吗？',
     phaseCount: 0,
@@ -20,8 +29,59 @@ Page({
     phaseDuration: 4000
   },
 
+  onLoad() {
+    const custom = wx.getStorageSync(CUSTOM_STORAGE_KEY) || DEFAULT_CUSTOM;
+    // getStorageSync 对不存在的 key 返回空字符串，需校验类型
+    const savedIndex = wx.getStorageSync(MODE_STORAGE_KEY);
+    const currentModeIndex = typeof savedIndex === 'number' && savedIndex >= 0 && savedIndex < this.data.modes.length
+      ? savedIndex
+      : 1;
+
+    this.setData({
+      custom,
+      currentModeIndex,
+      showCustomEditor: this.data.modes[currentModeIndex].custom === true,
+      ...this.customSummary(custom)
+    });
+  },
+
   selectMode(e) {
-    this.setData({ currentModeIndex: e.currentTarget.dataset.index });
+    const index = e.currentTarget.dataset.index;
+    this.setData({
+      currentModeIndex: index,
+      showCustomEditor: this.data.modes[index].custom === true
+    });
+    wx.setStorageSync(MODE_STORAGE_KEY, index);
+  },
+
+  onCustomChange(e) {
+    const field = e.currentTarget.dataset.field;
+    const value = e.detail.value;
+    const custom = { ...this.data.custom, [field]: value };
+    wx.setStorageSync(CUSTOM_STORAGE_KEY, custom);
+    this.setData({ custom, ...this.customSummary(custom) });
+  },
+
+  customSummary(custom) {
+    const cycleTotal = custom.inhale + custom.hold + custom.exhale;
+    return {
+      cycleTotal,
+      cyclesPerMin: (60 / cycleTotal).toFixed(1)
+    };
+  },
+
+  // 当前选中模式的毫秒参数；自定义模式读取实时调节的秒数
+  getCurrentMode() {
+    const mode = this.data.modes[this.data.currentModeIndex];
+    if (mode.custom) {
+      return {
+        name: mode.name,
+        inhale: this.data.custom.inhale * 1000,
+        hold: this.data.custom.hold * 1000,
+        exhale: this.data.custom.exhale * 1000
+      };
+    }
+    return mode;
   },
 
   toggleBreathing() {
@@ -59,7 +119,7 @@ Page({
   // 完成一整节呼吸练习，奖励 5 点健康分
   awardBonus() {
     const record = health.addScore(5);
-    wx.showToast({ title: `呼吸完成 +${5}分`, icon: 'success' });
+    wx.showToast({ title: '呼吸完成 +5分', icon: 'success' });
     this.setData({ earnedScore: record.score });
   },
 
@@ -98,7 +158,7 @@ Page({
 
   breathCycle() {
     if (!this.data.isRunning) return;
-    const mode = this.data.modes[this.data.currentModeIndex];
+    const mode = this.getCurrentMode();
 
     // 1. 吸气
     this.setPhase('inhale', '吸气...', mode.inhale);

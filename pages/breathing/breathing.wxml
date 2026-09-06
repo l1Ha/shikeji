@@ -1,10 +1,32 @@
 <view class="container">
   <view class="mode-selector" wx:if="{{!isRunning}}">
-    <view wx:for="{{modes}}" wx:key="name" 
-          class="mode-item {{currentModeIndex === index ? 'active' : ''}}" 
+    <view wx:for="{{modes}}" wx:key="name"
+          class="mode-item {{currentModeIndex === index ? 'active' : ''}}"
           bindtap="selectMode" data-index="{{index}}">
       {{item.name}}
     </view>
+  </view>
+
+  <view class="custom-editor" wx:if="{{showCustomEditor && !isRunning}}">
+    <view class="custom-row">
+      <text class="custom-label">吸气 {{custom.inhale}}s</text>
+      <slider class="custom-slider" min="1" max="10" step="1" value="{{custom.inhale}}"
+              bindchange="onCustomChange" data-field="inhale"
+              activeColor="#ffffff" backgroundColor="rgba(255,255,255,0.3)" block-size="20"/>
+    </view>
+    <view class="custom-row">
+      <text class="custom-label">屏息 {{custom.hold}}s</text>
+      <slider class="custom-slider" min="0" max="10" step="1" value="{{custom.hold}}"
+              bindchange="onCustomChange" data-field="hold"
+              activeColor="#ffffff" backgroundColor="rgba(255,255,255,0.3)" block-size="20"/>
+    </view>
+    <view class="custom-row">
+      <text class="custom-label">呼气 {{custom.exhale}}s</text>
+      <slider class="custom-slider" min="1" max="10" step="1" value="{{custom.exhale}}"
+              bindchange="onCustomChange" data-field="exhale"
+              activeColor="#ffffff" backgroundColor="rgba(255,255,255,0.3)" block-size="20"/>
+    </view>
+    <text class="custom-summary">一轮共 {{cycleTotal}} 秒 · 一分钟约 {{cyclesPerMin}} 轮 · 自动保存</text>
   </view>
 
   <view class="circle-container">

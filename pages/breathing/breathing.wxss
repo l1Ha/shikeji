@@ -1,5 +1,5 @@
 .container {
-  height: 100vh;
+  min-height: 100vh;
   background-color: #00cec9;
   display: flex;
   flex-direction: column;
@@ -7,12 +7,15 @@
   justify-content: center;
   color: white;
   padding: 40rpx;
+  box-sizing: border-box;
 }
 
 .mode-selector {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 20rpx;
-  margin-bottom: 60rpx;
+  margin-bottom: 40rpx;
 }
 
 .mode-item {
@@ -27,6 +30,41 @@
   background: white;
   color: #00cec9;
   font-weight: bold;
+}
+
+.custom-editor {
+  width: 100%;
+  margin-bottom: 40rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  border-radius: 20rpx;
+  padding: 24rpx 30rpx;
+  box-sizing: border-box;
+}
+
+.custom-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.custom-label {
+  font-size: 24rpx;
+  width: 150rpx;
+  flex-shrink: 0;
+}
+
+.custom-slider {
+  flex: 1;
+  margin: 0;
+}
+
+.custom-summary {
+  display: block;
+  text-align: center;
+  font-size: 22rpx;
+  opacity: 0.8;
+  margin-top: 12rpx;
 }
 
 .circle-container {
@@ -85,8 +123,7 @@
 }
 
 .footer {
-  position: absolute;
-  bottom: 100rpx;
+  margin-top: 50rpx;
 }
 
 .btn-action {
