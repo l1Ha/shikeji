@@ -172,3 +172,31 @@
   color: #636e72;
   line-height: 1.6;
 }
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background-color: #12161c;
+  }
+  .chart-card,
+  .tips-card {
+    background: #1e242d;
+    box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.25);
+  }
+  .chart-header {
+    border-bottom-color: #303845;
+  }
+  .chart-title,
+  .tips-title {
+    color: #e8eaed;
+  }
+  .tips-text {
+    color: #a0a6ad;
+  }
+  .bar-score {
+    color: #a0a6ad;
+  }
+  .bar-empty {
+    background: #303845;
+  }
+}

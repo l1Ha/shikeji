@@ -239,3 +239,34 @@
   50% { transform: scale(1.2); opacity: 1; }
   100% { transform: scale(0.8); opacity: 0.5; }
 }
+
+/* 深色模式适配：呼吸页为沉浸式纯色页面，无需适配 */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background-color: #12161c;
+  }
+  .quote-box,
+  .card,
+  .action-item {
+    background: #1e242d;
+    box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.25);
+  }
+  .card-icon-box {
+    background: #262d38;
+  }
+  .card-title,
+  .quote-text,
+  .action-item {
+    color: #e8eaed;
+  }
+  .card-desc {
+    color: #a0a6ad;
+  }
+  .quote-sub {
+    color: #6b7280;
+  }
+  .btn-pending {
+    background: #262d38;
+    color: #6b7280;
+  }
+}

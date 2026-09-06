@@ -113,3 +113,49 @@
   font-size: 32rpx;
   box-shadow: 0 10rpx 20rpx rgba(0, 184, 148, 0.2);
 }
+
+.time-hint {
+  font-size: 22rpx;
+  color: #e17055;
+  margin: -8rpx 0 20rpx;
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .container {
+    background-color: #12161c;
+  }
+  .section {
+    background: #1e242d;
+    box-shadow: 0 4rpx 15rpx rgba(0, 0, 0, 0.25);
+  }
+  .section-title {
+    color: #e8eaed;
+    border-bottom-color: #303845;
+  }
+  .reminder-item {
+    background: #262d38;
+    border-color: #303845;
+  }
+  .edit-title {
+    color: #e8eaed;
+    border-bottom-color: #303845;
+  }
+  .edit-desc {
+    color: #a0a6ad;
+    background: #1b2027;
+  }
+  .label {
+    color: #a0a6ad;
+  }
+  .time-value {
+    color: #4a9ff5;
+  }
+  .btn-add {
+    background: #262d38;
+    color: #4a9ff5;
+  }
+  .btn-save {
+    box-shadow: 0 10rpx 20rpx rgba(0, 0, 0, 0.35);
+  }
+}

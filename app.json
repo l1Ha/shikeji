@@ -6,17 +6,19 @@
     "pages/stats/stats"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#fff",
+    "backgroundTextStyle": "@bgTxtStyle",
+    "navigationBarBackgroundColor": "@navBgColor",
     "navigationBarTitleText": "时刻计",
-    "navigationBarTextStyle": "black"
+    "navigationBarTextStyle": "@navTxtStyle"
   },
   "__usePrivacyCheck__": true,
+  "darkmode": true,
+  "themeLocation": "theme.json",
   "tabBar": {
-    "color": "#999999",
-    "selectedColor": "#0984e3",
-    "backgroundColor": "#ffffff",
-    "borderStyle": "black",
+    "color": "@tabColor",
+    "selectedColor": "@tabSelectedColor",
+    "backgroundColor": "@tabBgColor",
+    "borderStyle": "@tabBorderStyle",
     "fontSize": "14px",
     "list": [
       {
