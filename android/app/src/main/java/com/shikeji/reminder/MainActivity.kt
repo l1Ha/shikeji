@@ -42,6 +42,7 @@ import com.shikeji.reminder.data.HealthStore
 import com.shikeji.reminder.data.HealthReminder
 import com.shikeji.reminder.data.ReminderStore
 import com.shikeji.reminder.data.SettingsStore
+import com.shikeji.reminder.update.UpdateChecker
 import com.shikeji.reminder.ui.theme.Teal200
 import com.shikeji.reminder.ui.theme.Typography
 import kotlinx.coroutines.delay
@@ -88,6 +89,16 @@ fun MainApp() {
         ) {
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
+        // 启动时自动检查新版本（有新版会自动弹出更新弹窗）
+        UpdateChecker.check(context)
+    }
+
+    // 更新包下载中：轮询系统 DownloadManager 进度
+    LaunchedEffect(UpdateChecker.downloading) {
+        while (UpdateChecker.downloading) {
+            delay(500)
+            UpdateChecker.pollProgress(context)
+        }
     }
 
     var currentTab by remember { mutableStateOf(0) }
@@ -122,6 +133,10 @@ fun MainApp() {
                 }
             }
         }
+    }
+
+    if (UpdateChecker.dialogVisible) {
+        UpdateDialog(onDismiss = { UpdateChecker.dialogVisible = false })
     }
 }
 
@@ -311,6 +326,45 @@ fun SettingsScreen() {
         }
 
         Text(
+            "关于与更新",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        Card(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column {
+                        Text(
+                            "当前版本 v" + UpdateChecker.currentVersionName(context),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            UpdateChecker.checkMessage ?: "应用启动时会自动检查新版本",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    TextButton(
+                        onClick = { UpdateChecker.check(context) },
+                        enabled = !UpdateChecker.checking
+                    ) {
+                        Text(if (UpdateChecker.checking) "检查中…" else "检查更新")
+                    }
+                }
+                val pendingUpdate = UpdateChecker.latest
+                if (pendingUpdate != null) {
+                    TextButton(onClick = { UpdateChecker.dialogVisible = true }) {
+                        Text("发现新版本 ${pendingUpdate.version}，去更新", color = Color(0xFF00b894))
+                    }
+                }
+            }
+        }
+
+        Text(
             "提示：部分厂商的后台管控较严，建议在系统设置中允许本应用「自启动」并将省电策略设为「无限制」，提醒会更准时。",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -455,6 +509,77 @@ fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
             )
         }
     }
+}
+
+// ---------------- 应用内更新 ----------------
+
+@Composable
+fun UpdateDialog(onDismiss: () -> Unit) {
+    val context = LocalContext.current
+    val info = UpdateChecker.latest ?: return
+
+    AlertDialog(
+        onDismissRequest = { if (!UpdateChecker.downloading) onDismiss() },
+        title = { Text("发现新版本 ${info.version}") },
+        text = {
+            Column(
+                modifier = Modifier
+                    .heightIn(max = 360.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    info.notes.ifBlank { "性能优化与问题修复。" },
+                    style = MaterialTheme.typography.bodySmall
+                )
+                when {
+                    UpdateChecker.downloading -> {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            "下载中 ${UpdateChecker.downloadProgress}%",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        LinearProgressIndicator(
+                            progress = UpdateChecker.downloadProgress / 100f,
+                            modifier = Modifier.fillMaxWidth().padding(top = 6.dp)
+                        )
+                    }
+                    UpdateChecker.downloadedApk != null -> {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            "下载完成，点击「安装」开始更新。",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color(0xFF00b894),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    when {
+                        UpdateChecker.downloadedApk != null -> UpdateChecker.install(context)
+                        !UpdateChecker.downloading -> UpdateChecker.startDownload(context)
+                    }
+                },
+                enabled = !UpdateChecker.downloading
+            ) {
+                Text(
+                    when {
+                        UpdateChecker.downloadedApk != null -> "安装"
+                        UpdateChecker.downloading -> "下载中…"
+                        else -> "立即更新"
+                    }
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(if (UpdateChecker.downloading) "后台下载" else "暂不更新")
+            }
+        }
+    )
 }
 
 // ---------------- 呼吸冥想 ----------------
