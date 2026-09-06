@@ -1,0 +1,351 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1B634EE70236340785E16D0F /* IOSMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE13B767AFC89423A7F18335 /* IOSMain.swift */; };
+		2E33715744DA7FCDEFCA526E /* HealthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E9D17B1302C9156587FCEC7 /* HealthStore.swift */; };
+		30DF67C8237AE6E1B309A9D9 /* UpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58BED2B518588510C4D64F81 /* UpdateChecker.swift */; };
+		3CC36DF4593CA6281759B2CC /* MacMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03A3FCAC4138114D73865706 /* MacMain.swift */; };
+		4AC01C22BECAC08207FAB58F /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1920BDB9E6EC6B9787DF6990 /* Models.swift */; };
+		4D5B476D4421395A56034955 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7A701C1C6B833036D2D2C5F /* RootView.swift */; };
+		53735AB9DCC1AE6CDD2345BB /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9D8294414A78A86B7F6803 /* NotificationScheduler.swift */; };
+		813E9BACC76F6FB75D065706 /* ReminderListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C413BEF06CB17038AE0FF3D6 /* ReminderListView.swift */; };
+		8AD7FAC08AFFD978F856B474 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25DDFBC500E81169DE2D7D6 /* SettingsView.swift */; };
+		B25880E222508E63939132EE /* ReminderStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0786FB6ACA18A997582EB748 /* ReminderStore.swift */; };
+		B42EC78F20A30B017BC21278 /* BreathingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E756F6DAD71E56E5371D6B5 /* BreathingView.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		03A3FCAC4138114D73865706 /* MacMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMain.swift; sourceTree = "<group>"; };
+		0786FB6ACA18A997582EB748 /* ReminderStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderStore.swift; sourceTree = "<group>"; };
+		0E756F6DAD71E56E5371D6B5 /* BreathingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathingView.swift; sourceTree = "<group>"; };
+		1920BDB9E6EC6B9787DF6990 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		2E9D17B1302C9156587FCEC7 /* HealthStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthStore.swift; sourceTree = "<group>"; };
+		3F9D8294414A78A86B7F6803 /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
+		58BED2B518588510C4D64F81 /* UpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateChecker.swift; sourceTree = "<group>"; };
+		8B81857B2A70458812675B99 /* Shikeji.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Shikeji.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C413BEF06CB17038AE0FF3D6 /* ReminderListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderListView.swift; sourceTree = "<group>"; };
+		CE13B767AFC89423A7F18335 /* IOSMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOSMain.swift; sourceTree = "<group>"; };
+		D7A701C1C6B833036D2D2C5F /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		F25DDFBC500E81169DE2D7D6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		121ECCB73B9E47300B691800 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				2578B8E785D2132286F32377 /* ShikejiApp */,
+				9115BC02E1F151DBEC09106A /* ShikejiKit */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		2578B8E785D2132286F32377 /* ShikejiApp */ = {
+			isa = PBXGroup;
+			children = (
+				0E756F6DAD71E56E5371D6B5 /* BreathingView.swift */,
+				CE13B767AFC89423A7F18335 /* IOSMain.swift */,
+				03A3FCAC4138114D73865706 /* MacMain.swift */,
+				C413BEF06CB17038AE0FF3D6 /* ReminderListView.swift */,
+				D7A701C1C6B833036D2D2C5F /* RootView.swift */,
+				F25DDFBC500E81169DE2D7D6 /* SettingsView.swift */,
+			);
+			path = ShikejiApp;
+			sourceTree = "<group>";
+		};
+		6202D8DC9C5F7886E9615AE0 = {
+			isa = PBXGroup;
+			children = (
+				121ECCB73B9E47300B691800 /* Sources */,
+				875564134F82DE1D875D0CD5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		875564134F82DE1D875D0CD5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8B81857B2A70458812675B99 /* Shikeji.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		9115BC02E1F151DBEC09106A /* ShikejiKit */ = {
+			isa = PBXGroup;
+			children = (
+				2E9D17B1302C9156587FCEC7 /* HealthStore.swift */,
+				1920BDB9E6EC6B9787DF6990 /* Models.swift */,
+				3F9D8294414A78A86B7F6803 /* NotificationScheduler.swift */,
+				0786FB6ACA18A997582EB748 /* ReminderStore.swift */,
+				58BED2B518588510C4D64F81 /* UpdateChecker.swift */,
+			);
+			path = ShikejiKit;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		904F9B1E2A403B977BF2CB5E /* Shikeji */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7A0BEF8170356B058A6CA43F /* Build configuration list for PBXNativeTarget "Shikeji" */;
+			buildPhases = (
+				1C5CE56938C7B8107ABA054A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Shikeji;
+			packageProductDependencies = (
+			);
+			productName = Shikeji;
+			productReference = 8B81857B2A70458812675B99 /* Shikeji.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F54509DB1AAEFCF65D787C72 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					904F9B1E2A403B977BF2CB5E = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 367EFFF6359B67074400BB0B /* Build configuration list for PBXProject "Shikeji" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 6202D8DC9C5F7886E9615AE0;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 875564134F82DE1D875D0CD5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				904F9B1E2A403B977BF2CB5E /* Shikeji */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1C5CE56938C7B8107ABA054A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B42EC78F20A30B017BC21278 /* BreathingView.swift in Sources */,
+				2E33715744DA7FCDEFCA526E /* HealthStore.swift in Sources */,
+				1B634EE70236340785E16D0F /* IOSMain.swift in Sources */,
+				3CC36DF4593CA6281759B2CC /* MacMain.swift in Sources */,
+				4AC01C22BECAC08207FAB58F /* Models.swift in Sources */,
+				53735AB9DCC1AE6CDD2345BB /* NotificationScheduler.swift in Sources */,
+				813E9BACC76F6FB75D065706 /* ReminderListView.swift in Sources */,
+				B25880E222508E63939132EE /* ReminderStore.swift in Sources */,
+				4D5B476D4421395A56034955 /* RootView.swift in Sources */,
+				8AD7FAC08AFFD978F856B474 /* SettingsView.swift in Sources */,
+				30DF67C8237AE6E1B309A9D9 /* UpdateChecker.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		385962D1C5F48299BA55604D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "时刻计";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shikeji.ios;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		39FDFB5F6865EEAA1B924877 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		473C1FD9B08A06C4D231F256 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "时刻计";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.shikeji.ios;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		C691D5146819446E1937F72E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		367EFFF6359B67074400BB0B /* Build configuration list for PBXProject "Shikeji" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C691D5146819446E1937F72E /* Debug */,
+				39FDFB5F6865EEAA1B924877 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7A0BEF8170356B058A6CA43F /* Build configuration list for PBXNativeTarget "Shikeji" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				385962D1C5F48299BA55604D /* Debug */,
+				473C1FD9B08A06C4D231F256 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F54509DB1AAEFCF65D787C72 /* Project object */;
+}

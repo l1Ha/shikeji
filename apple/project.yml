@@ -1,0 +1,27 @@
+name: Shikeji
+options:
+  bundleIdPrefix: com.shikeji
+  createIntermediateGroups: true
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+targets:
+  Shikeji:
+    type: application
+    platform: iOS
+    sources:
+      - path: Sources/ShikejiKit
+      - path: Sources/ShikejiApp
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.shikeji.ios
+        MARKETING_VERSION: "1.0.0"
+        CURRENT_PROJECT_VERSION: 1
+        GENERATE_INFOPLIST_FILE: true
+        INFOPLIST_KEY_CFBundleDisplayName: 时刻计
+        INFOPLIST_KEY_UILaunchScreen_Generation: true
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: true
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGN_STYLE: Automatic
