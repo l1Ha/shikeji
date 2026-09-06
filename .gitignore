@@ -28,3 +28,6 @@ android/local.properties
 android/.idea/
 android/captures/
 *.apk
+
+# Android 签名密钥与密码（务必本地备份，丢失后无法对已有安装覆盖升级）
+android/keystore/

@@ -23,7 +23,10 @@ class ReminderWorker(context: Context, params: WorkerParameters) : Worker(contex
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "健康提醒", NotificationManager.IMPORTANCE_HIGH)
+            val channel = NotificationChannel(channelId, "健康提醒", NotificationManager.IMPORTANCE_HIGH).apply {
+                enableVibration(true)
+                vibrationPattern = longArrayOf(0, 300, 200, 300)
+            }
             notificationManager.createNotificationChannel(channel)
         }
 
@@ -32,6 +35,7 @@ class ReminderWorker(context: Context, params: WorkerParameters) : Worker(contex
             .setContentText(content)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setVibrate(longArrayOf(0, 300, 200, 300))
             .setAutoCancel(true)
             .build()
 

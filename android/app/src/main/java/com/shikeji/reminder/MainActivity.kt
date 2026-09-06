@@ -1,8 +1,13 @@
 package com.shikeji.reminder
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,21 +25,55 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
+import com.shikeji.reminder.data.DefaultReminders
 import com.shikeji.reminder.data.HealthReminder
 import com.shikeji.reminder.ui.theme.Teal200
 import com.shikeji.reminder.ui.theme.Typography
+import com.shikeji.reminder.worker.ReminderWorker
 import kotlinx.coroutines.delay
+import java.util.concurrent.TimeUnit
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        scheduleDefaultReminders()
         setContent {
             ShikejiTheme {
                 MainApp()
             }
+        }
+    }
+
+    /**
+     * 用 WorkManager 周期任务调度默认提醒。
+     * - KEEP 策略：重复启动不会重复排队；WorkManager 自带开机后自动恢复
+     * - 兼容性：周期任务最小间隔 15 分钟，系统为省电可能合并执行，属正常行为
+     */
+    private fun scheduleDefaultReminders() {
+        val workManager = WorkManager.getInstance(this)
+        DefaultReminders.ALL.forEach { reminder ->
+            val request = PeriodicWorkRequestBuilder<ReminderWorker>(reminder.intervalMinutes.toLong(), TimeUnit.MINUTES)
+                .setInputData(
+                    workDataOf(
+                        "title" to reminder.title,
+                        "content" to reminder.description
+                    )
+                )
+                .build()
+            workManager.enqueueUniquePeriodicWork(
+                "reminder_${reminder.id}",
+                ExistingPeriodicWorkPolicy.KEEP,
+                request
+            )
         }
     }
 }
@@ -54,6 +93,23 @@ fun ShikejiTheme(content: @Composable () -> Unit) {
 
 @Composable
 fun MainApp() {
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { /* 用户拒绝后不打扰，仅应用内提醒仍可用 */ }
+
+    LaunchedEffect(Unit) {
+        // 兼容性：Android 13+ 通知是运行时权限，未授权时通知不会展示
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
+
     var currentTab by remember { mutableStateOf(0) }
     var showBreathing by remember { mutableStateOf(false) }
 
@@ -89,15 +145,8 @@ fun MainApp() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(onStartBreathing: () -> Unit) {
-    val reminders = listOf(
-        HealthReminder(title = "起身活动", intervalMinutes = 45, description = "站起来伸个腰"),
-        HealthReminder(title = "喝水提醒", intervalMinutes = 60, description = "补充水分"),
-        HealthReminder(title = "远眺放松", intervalMinutes = 30, description = "放松双眼")
-    )
-
     LazyColumn(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -112,7 +161,7 @@ fun MainScreen(onStartBreathing: () -> Unit) {
                 Text("开始1分钟呼吸冥想")
             }
         }
-        items(reminders) { reminder ->
+        items(DefaultReminders.ALL) { reminder ->
             ReminderCard(reminder)
         }
     }
@@ -148,9 +197,10 @@ fun ReminderCard(reminder: HealthReminder) {
                 Text(reminder.description, style = MaterialTheme.typography.bodySmall)
             }
             Column(horizontalAlignment = Alignment.End) {
-                Text("45:00", style = MaterialTheme.typography.titleLarge, color = Teal200)
+                val minutes = reminder.intervalMinutes
+                Text("%02d:00".format(minutes), style = MaterialTheme.typography.titleLarge, color = Teal200)
                 Button(onClick = {}, modifier = Modifier.height(30.dp), contentPadding = PaddingValues(horizontal = 12.dp, vertical = 0.dp)) {
-                    Text("待完成", fontSize = 12.sp)
+                    Text("已调度", fontSize = 12.sp)
                 }
             }
         }
@@ -163,7 +213,8 @@ fun SettingsScreen() {
         Text("时刻计 设置", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(20.dp))
         Text("提醒生效时间: 09:00 - 17:00")
-        // 这里后续可以添加更多滑动条
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("提醒已在启动时自动调度，无需额外设置", style = MaterialTheme.typography.bodySmall)
     }
 }
 

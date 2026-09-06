@@ -65,8 +65,17 @@ miniprogram/
 
 ### Android 版本
 
-1. 使用 Android Studio 打开 `android/` 目录
-2. 同步 Gradle 后直接运行到设备
+**直接安装**：前往 [Releases](https://github.com/l1Ha/shikeji/releases) 下载最新 `shikeji-vX.Y.Z.apk` 安装即可。
+
+- 兼容 Android 7.0（API 24）及以上，覆盖绝大多数在用机型
+- 首次启动会请求通知权限（Android 13+ 必需），拒绝后应用内提醒仍可用
+- 提醒基于 WorkManager 周期任务，重启手机后自动恢复；系统省电策略可能使触发时间有小幅浮动
+- 部分厂商（小米/华为等）的后台管控更激进，建议在系统设置中允许应用「自启动 / 无限制省电」，提醒会更准时
+
+**本地构建**：
+
+1. 使用 Android Studio 打开 `android/` 目录，或命令行 `JAVA_HOME=<JDK17> ./gradlew assembleRelease`
+2. Release 签名从 `android/keystore/keystore.properties` 读取（该目录不入库），缺失时产出未签名 APK
 
 ## 🛠 技术要点
 
