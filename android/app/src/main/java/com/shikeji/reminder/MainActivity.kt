@@ -38,10 +38,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
-import com.shikeji.reminder.data.DefaultReminders
 import com.shikeji.reminder.data.HealthStore
 import com.shikeji.reminder.data.HealthReminder
 import com.shikeji.reminder.data.ReminderStore
+import com.shikeji.reminder.data.SettingsStore
 import com.shikeji.reminder.ui.theme.Teal200
 import com.shikeji.reminder.ui.theme.Typography
 import kotlinx.coroutines.delay
@@ -158,7 +158,7 @@ fun MainScreen(onStartBreathing: () -> Unit) {
                 Text("开始1分钟呼吸冥想")
             }
         }
-        items(DefaultReminders.ALL) { reminder ->
+        items(ReminderStore.reminders) { reminder ->
             ReminderCard(reminder, now)
         }
         item {
@@ -213,7 +213,6 @@ fun HealthScoreCard() {
 fun ReminderCard(reminder: HealthReminder, now: Long) {
     // 订阅 store 版本号，完成/调整间隔后立即刷新
     val revision = ReminderStore.revision
-    val interval = remember(reminder.id, revision) { ReminderStore.intervalMinutes(reminder.id) }
     val nextTrigger = remember(reminder.id, revision) { ReminderStore.nextTriggerAt(reminder.id) }
     val unacknowledged = remember(reminder.id, revision) { ReminderStore.isUnacknowledged(reminder.id) }
 
@@ -234,7 +233,7 @@ fun ReminderCard(reminder: HealthReminder, now: Long) {
                 Text(reminder.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text(reminder.description, style = MaterialTheme.typography.bodySmall)
                 Text(
-                    "每 $interval 分钟 · 下次 $countdown",
+                    "每 ${reminder.intervalMinutes} 分钟 · 下次 $countdown",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 4.dp)
@@ -262,8 +261,10 @@ fun ReminderCard(reminder: HealthReminder, now: Long) {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen() {
+    val context = LocalContext.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -271,15 +272,44 @@ fun SettingsScreen() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text("提醒设置", style = MaterialTheme.typography.headlineMedium)
+        Text("我的提醒清单", style = MaterialTheme.typography.headlineMedium)
         Text(
-            "拖动滑块调整提醒间隔，保存后立即按新间隔重新计时。",
+            "标题、描述、间隔修改后自动保存并立即生效。",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        DefaultReminders.ALL.forEach { reminder ->
-            IntervalEditorCard(reminder)
+        ReminderStore.reminders.forEach { reminder ->
+            ReminderEditCard(reminder)
         }
+        OutlinedButton(
+            onClick = { ReminderStore.addReminder(context) },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("+ 添加新提醒")
+        }
+
+        Text(
+            "提醒生效时间",
+            style = MaterialTheme.typography.headlineSmall,
+            modifier = Modifier.padding(top = 8.dp)
+        )
+        TimeSettingRow("开始时间", SettingsStore.startTime) { SettingsStore.updateStartTime(it) }
+        TimeSettingRow("结束时间", SettingsStore.endTime) { SettingsStore.updateEndTime(it) }
+        if (SettingsStore.startTime > SettingsStore.endTime) {
+            Text(
+                "跨天模式：提醒将持续到次日结束时间",
+                style = MaterialTheme.typography.bodySmall,
+                color = Color(0xFFe17055)
+            )
+        }
+
+        SwitchRow("勿扰模式（22:00 - 次日 8:00 自动静默）", SettingsStore.dnd) {
+            SettingsStore.updateDnd(it)
+        }
+        SwitchRow("通知震动", SettingsStore.vibration) {
+            SettingsStore.updateVibration(it)
+        }
+
         Text(
             "提示：部分厂商的后台管控较严，建议在系统设置中允许本应用「自启动」并将省电策略设为「无限制」，提醒会更准时。",
             style = MaterialTheme.typography.bodySmall,
@@ -290,43 +320,138 @@ fun SettingsScreen() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun IntervalEditorCard(reminder: HealthReminder) {
+fun ReminderEditCard(reminder: HealthReminder) {
     val context = LocalContext.current
     val revision = ReminderStore.revision
+    var title by remember(reminder.id) { mutableStateOf(reminder.title) }
+    var description by remember(reminder.id) { mutableStateOf(reminder.description) }
     var sliderValue by remember(reminder.id) {
-        mutableStateOf(ReminderStore.intervalMinutes(reminder.id).toFloat())
+        mutableStateOf(reminder.intervalMinutes.toFloat())
     }
     val nextTrigger = remember(reminder.id, revision) { ReminderStore.nextTriggerAt(reminder.id) }
 
     Card(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp)) {
+            OutlinedTextField(
+                value = title,
+                onValueChange = {
+                    title = it
+                    ReminderStore.updateText(reminder.id, it, description)
+                },
+                label = { Text("标题") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = description,
+                onValueChange = {
+                    description = it
+                    ReminderStore.updateText(reminder.id, title, it)
+                },
+                label = { Text("提醒描述") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp)
+            )
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(top = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(reminder.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
                 Text(
-                    "下次 " + java.text.SimpleDateFormat("HH:mm", java.util.Locale.CHINA)
-                        .format(java.util.Date(nextTrigger)),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    "间隔 ${sliderValue.toInt()} 分钟",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF00b894),
+                    fontWeight = FontWeight.Bold
                 )
+                TextButton(
+                    onClick = {
+                        ReminderStore.removeReminder(context, reminder.id)
+                        Toast.makeText(context, "已删除「${reminder.title}」", Toast.LENGTH_SHORT).show()
+                    },
+                    enabled = ReminderStore.reminders.size > 1
+                ) {
+                    Text("删除", color = if (ReminderStore.reminders.size > 1) Color(0xFFd63031) else Color.Gray)
+                }
             }
-            Text(
-                "间隔 ${sliderValue.toInt()} 分钟",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFF00b894),
-                fontWeight = FontWeight.Bold
-            )
             Slider(
                 value = sliderValue,
                 onValueChange = { sliderValue = it },
                 onValueChangeFinished = {
-                    ReminderStore.setInterval(context, reminder.id, sliderValue.toInt())
-                    Toast.makeText(context, "已按 ${sliderValue.toInt()} 分钟重新计时", Toast.LENGTH_SHORT).show()
+                    val minutes = sliderValue.toInt()
+                    ReminderStore.setInterval(context, reminder.id, minutes)
+                    Toast.makeText(context, "已按 $minutes 分钟重新计时", Toast.LENGTH_SHORT).show()
                 },
                 valueRange = 1f..180f
+            )
+            Text(
+                "下次提醒 " + java.text.SimpleDateFormat("HH:mm", java.util.Locale.CHINA)
+                    .format(java.util.Date(nextTrigger)),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimeSettingRow(label: String, value: String, onChange: (String) -> Unit) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 14.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(label, style = MaterialTheme.typography.bodyLarge)
+            Text(
+                value,
+                color = Color(0xFF0984e3),
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp,
+                modifier = Modifier.clickable { showDialog = true }
+            )
+        }
+    }
+
+    if (showDialog) {
+        val initialHour = value.substringBefore(":").toIntOrNull() ?: 9
+        val initialMinute = value.substringAfter(":").toIntOrNull() ?: 0
+        val timeState = rememberTimePickerState(
+            initialHour = initialHour,
+            initialMinute = initialMinute,
+            is24Hour = true
+        )
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    onChange("%02d:%02d".format(timeState.hour, timeState.minute))
+                    showDialog = false
+                }) { Text("确定") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) { Text("取消") }
+            },
+            text = { TimePicker(state = timeState) }
+        )
+    }
+}
+
+@Composable
+fun SwitchRow(label: String, checked: Boolean, onChange: (Boolean) -> Unit) {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(label, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+            Switch(
+                checked = checked,
+                onCheckedChange = onChange,
+                colors = SwitchDefaults.colors(checkedTrackColor = Color(0xFF00b894))
             )
         }
     }

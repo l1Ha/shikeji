@@ -11,34 +11,45 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.shikeji.reminder.MainActivity
 import com.shikeji.reminder.data.ReminderStore
+import com.shikeji.reminder.data.SettingsStore
 
 class ReminderWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
     override fun doWork(): Result {
-        val id = inputData.getString("id")
-        val title = inputData.getString("title") ?: "健康提醒"
-        val content = inputData.getString("content") ?: "该休息一下啦"
-        val interval = inputData.getInt("interval", 30)
+        val id = inputData.getString("id") ?: return Result.success()
+        val reminder = ReminderStore.reminderById(id) ?: return Result.success() // 提醒已被删除
 
-        // 先排下一轮再发通知，保证提醒链自持（用户不打开应用也会持续提醒）
-        if (id != null) {
-            ReminderStore.onReminderFired(applicationContext, id, interval)
+        SettingsStore.init(applicationContext)
+
+        // 先排下一轮再决定是否通知，保证提醒链自持（用户不打开应用也会持续提醒）
+        ReminderStore.onReminderFired(applicationContext, id)
+
+        // 静默时段（非生效窗口 / 勿扰时段）：不打扰，也不标记待确认
+        if (!SettingsStore.isSilentNow()) {
+            ReminderStore.markUnacknowledged(id)
+            sendNotification(reminder.title, reminder.description)
         }
-
-        sendNotification(title, content)
         return Result.success()
     }
 
     private fun sendNotification(title: String, content: String) {
-        val channelId = "health_reminders"
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
+        // 震动开关用两个渠道实现：Android 8+ 渠道一旦创建，震动行为以渠道为准
+        val vibrationOn = SettingsStore.vibration
+        val channelId = if (vibrationOn) "health_reminders" else "health_reminders_quiet"
+        val pattern = longArrayOf(0, 300, 200, 300)
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(channelId, "健康提醒", NotificationManager.IMPORTANCE_HIGH).apply {
+            val vibChannel = NotificationChannel("health_reminders", "健康提醒（震动）", NotificationManager.IMPORTANCE_HIGH).apply {
                 enableVibration(true)
-                vibrationPattern = longArrayOf(0, 300, 200, 300)
+                vibrationPattern = pattern
             }
-            notificationManager.createNotificationChannel(channel)
+            val quietChannel = NotificationChannel("health_reminders_quiet", "健康提醒（静音）", NotificationManager.IMPORTANCE_HIGH).apply {
+                enableVibration(false)
+            }
+            notificationManager.createNotificationChannel(vibChannel)
+            notificationManager.createNotificationChannel(quietChannel)
         }
 
         val openApp = Intent(applicationContext, MainActivity::class.java).apply {
@@ -57,7 +68,7 @@ class ReminderWorker(context: Context, params: WorkerParameters) : Worker(contex
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
-            .setVibrate(longArrayOf(0, 300, 200, 300))
+            .setVibrate(if (vibrationOn) pattern else longArrayOf(0L))
             .setAutoCancel(true)
             .build()
 
